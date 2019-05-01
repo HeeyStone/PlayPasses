@@ -16,7 +16,7 @@ class PassCommand : CommandExecutor {
     }
 
     init {
-        PlayPass.INSTANCE.getCommand("manager").executor = this
+        PlayPass.INSTANCE.getCommand("pass").executor = this
     }
 
     override fun onCommand(sender: CommandSender, command: Command?, label: String?, args: Array<out String>): Boolean {
@@ -25,15 +25,22 @@ class PassCommand : CommandExecutor {
                 Sound.VILLAGER_NO,
                 "",
                 "§6§lPASSE DE ELITE",
-                "§f/passe setar <jogador> - Seta um passe.",
-                "§f/passe inventory [jogador] - Abre o inventário de missões.",
+                "§7/passe setar <jogador> - Seta um passe.",
+                "§7/passe inventory [jogador] - Abre o inventário de missões.",
                 "")
             return true
         }
 
         if (args[0].equals("setar", true)) {
-            val target = Bukkit.getPlayer(args[0])
-            val passManager = PassManager(target.uniqueId)
+            if (args.size <= 1) {
+                sender.sendMessage(Sound.VILLAGER_NO,
+                    "",
+                    "§6§lPASSE DE ELITE",
+                    "§7Use §6'/passe setar <jogador>'§7 para poder setar o passe em alguém.",
+                    "")
+                return false
+            }
+            val target = Bukkit.getPlayer(args[1])
             if (!sender.hasPermission("playpasses.setar")) {
                 sender.sendMessage(Sound.VILLAGER_NO, "§cVocê não tem permissão para esse comando.")
                 return false
@@ -42,17 +49,19 @@ class PassCommand : CommandExecutor {
                 sender.sendMessage(Sound.VILLAGER_NO, "§cO jogador digitado não está on-line.")
                 return false
             }
+            val passManager = PassManager(target.uniqueId)
             if (passManager.hasPass()) {
                 sender.sendMessage(Sound.VILLAGER_NO, "§cO jogador digitado já possui um passe.")
+                return false
             }
             passManager.putInCache()
-            sender.sendMessage(Sound.LEVEL_UP, "§aVocê setou o passe de §f${target.name}§a com sucesso.")
+            sender.sendMessage(Sound.LEVEL_UP, "§aVocê setou o passe de §7${target.name}§a com sucesso.")
             target.sendMessage(
                 Sound.ITEM_PICKUP,
                 "",
                 "§6§lPASSE DE ELITE",
-                "§fVocê ganhou um passe de elite.",
-                "§fVocê pode fazer as missões do passe no NPC do spawn.",
+                "§7Você ganhou um passe de elite.",
+                "§7Você pode fazer as missões do passe no NPC do spawn.",
                 "")
             return true
         }
