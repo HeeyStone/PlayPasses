@@ -1,6 +1,7 @@
 package com.playfactions.pass
 
 import com.playfactions.pass.commands.PassCommand
+import com.playfactions.pass.listener.PlayerListeners
 import com.playfactions.pass.manager.QuestPlayer
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
@@ -18,6 +19,7 @@ class PlayPass : JavaPlugin() {
         CACHE = HashMap()
 
         PassCommand()
+        PlayerListeners()
     }
 
 }

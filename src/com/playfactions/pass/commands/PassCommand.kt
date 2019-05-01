@@ -3,16 +3,40 @@ package com.playfactions.pass.commands
 import com.playfactions.kotlin.util.sendMessage
 import com.playfactions.pass.PlayPass
 import com.playfactions.pass.manager.PassManager
+import com.playfactions.pass.util.*
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 class PassCommand : CommandExecutor {
 
     companion object {
         val list = listOf("setar", "set", "inventory")
+
+        fun CommandSender.openQuestsInventory() {
+            val inv = Bukkit.createInventory(null, 3*9, "Missões do passe de elite")
+
+            if (this is Player) {
+                val passManager = PassManager(uniqueId)
+
+                inv.setItem(10, ItemStack(Material.MINECART)
+                    .name("§eMissão §f#1")
+                    .lore(
+                        "",
+                        "§7Mate §f1000§7 monstros no servidor.",
+                        "§7Você já matou §f${passManager.getQuestProgress("mobKiller")} monstros§7.",
+                        "",
+                        "§e* Recompensa: §f20.000 cash",
+                        ""))
+
+                openInventory(inv)
+            }
+        }
     }
 
     init {
@@ -31,7 +55,7 @@ class PassCommand : CommandExecutor {
             return true
         }
 
-        if (args[0].equals("setar", true)) {
+        if (args[0].equals("setar", true) || args[0].equals("set", true)) {
             if (args.size <= 1) {
                 sender.sendMessage(Sound.VILLAGER_NO,
                     "",
@@ -65,6 +89,10 @@ class PassCommand : CommandExecutor {
                 "")
             return true
         }
+        if (args[0].equals("inventory", true)) {
+            sender.openQuestsInventory()
+        }
+
         return false
     }
 
