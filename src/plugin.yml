@@ -1,0 +1,3 @@
+  name: PlayPasses
+  main: com.playfactions.manager.PlayPass
+  version: "2.0"
