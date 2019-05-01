@@ -35,7 +35,7 @@ class PassManager(val uuid: UUID) {
     fun getQuestProgress(quest: String): Int? {
         if (hasPass()) {
             getQuestPlayer().quests.forEach {
-                if (it.name.equals(quest, true)) return it.progress
+                if (it.name.equals(quest, true) || it.name.equals("collected$quest", true)) return it.progress
             }
         }
         return null
@@ -44,12 +44,29 @@ class PassManager(val uuid: UUID) {
     fun addProgressInQuest(quest: String, int: Int) {
         if (hasPass()) {
             getQuestPlayer().quests.forEach {
-                if (it.name.equals(quest, true)) it.progress += int
+                if (it.name.equals(quest, true) || it.name.toLowerCase().equals("collected${quest.toLowerCase()}")) it.progress += int
             }
         }
     }
 
+    fun colectQuest(quest: String) {
+        val quests = getQuestPlayer().quests
+        quests.forEach {
+            if (it.name == quest) {
+                it.name = "collectedMobKiller"
+            }
+        }
+        getQuestPlayer().quests = quests
+    }
+
+    fun isCollectedQuest(quest: String): Boolean {
+        getQuestPlayer().quests.forEach {
+            if (it.name.toLowerCase().contains(quest.toLowerCase()) && it.name.contains("collected")) return true
+        }
+        return false
+    }
+
 }
 
-data class QuestPlayer(val uuid: UUID, val quests: ArrayList<Quest>)
-data class Quest(val name: String, var progress: Int)
+data class QuestPlayer(val uuid: UUID, var quests: ArrayList<Quest>)
+data class Quest(var name: String, var progress: Int)

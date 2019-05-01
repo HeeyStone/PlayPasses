@@ -1,6 +1,7 @@
 package com.playfactions.pass
 
 import com.playfactions.pass.commands.PassCommand
+import com.playfactions.pass.listener.InventoryListeners
 import com.playfactions.pass.listener.PlayerListeners
 import com.playfactions.pass.manager.QuestPlayer
 import org.bukkit.plugin.java.JavaPlugin
@@ -20,6 +21,7 @@ class PlayPass : JavaPlugin() {
 
         PassCommand()
         PlayerListeners()
+        InventoryListeners()
     }
 
 }

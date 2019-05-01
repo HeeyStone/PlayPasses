@@ -24,14 +24,17 @@ class PassCommand : CommandExecutor {
             if (this is Player) {
                 val passManager = PassManager(uniqueId)
 
-                inv.setItem(10, ItemStack(Material.MINECART)
+                inv.setItem(10, ItemStack(if (passManager.isCollectedQuest("mobKiller")) Material.STORAGE_MINECART else Material.MINECART)
                     .name("§eMissão §f#1")
                     .lore(
                         "",
                         "§7Mate §f1000§7 monstros no servidor.",
                         "§7Você já matou §f${passManager.getQuestProgress("mobKiller")} monstros§7.",
                         "",
-                        "§e* Recompensa: §f20.000 cash",
+                        "§eRecompensa: §f20.000 cash",
+                        if (passManager.isCollectedQuest("mobKiller")) "§eVocê já completou essa missão."
+                        else if (passManager.getQuestProgress("mobKiller")!! >= 1000) "§eClique para completar a missão"
+                        else "§7Você não pode completar a missão",
                         ""))
 
                 openInventory(inv)
@@ -90,7 +93,24 @@ class PassCommand : CommandExecutor {
             return true
         }
         if (args[0].equals("inventory", true)) {
-            sender.openQuestsInventory()
+            if (args.size == 1) {
+                if (!PassManager((sender as Player).uniqueId).hasPass()) {
+                    sender.sendMessage(Sound.VILLAGER_NO, "§cVocê não possui passe de elite.")
+                    return false
+                }
+                sender.openQuestsInventory()
+                return true
+            }
+            val target = Bukkit.getPlayer(args[1])
+            if (target == null) {
+                sender.sendMessage(Sound.VILLAGER_NO, "§cO jogador digitado não está on-line.")
+                return false
+            }
+            if (!PassManager(target.uniqueId).hasPass()) {
+                sender.sendMessage(Sound.VILLAGER_NO, "§cO jogador digitado não possui passe.")
+            }
+            target.openQuestsInventory()
+            return true
         }
 
         return false
