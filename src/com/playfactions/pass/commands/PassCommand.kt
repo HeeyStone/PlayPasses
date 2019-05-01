@@ -34,7 +34,7 @@ class PassCommand : CommandExecutor {
                         "§eRecompensa: §f20.000 cash",
                         if (passManager.isCollectedQuest("mobKiller")) "§eVocê já completou essa missão."
                         else if (passManager.getQuestProgress("mobKiller")!! >= 1000) "§eClique para completar a missão"
-                        else "§7Você não pode completar a missão",
+                        else "§7Você ainda não completou essa missão, faltam: §f${1000.minus(passManager.getQuestProgress("mobKiller")!!)} kills§7.",
                         ""))
 
                 inv.setItem(11, ItemStack(if (passManager.isCollectedQuest("blockWalker")) Material.STORAGE_MINECART else Material.MINECART)
@@ -46,8 +46,8 @@ class PassCommand : CommandExecutor {
                         "",
                         "§eRecompensa: §f20.000 cash",
                         if (passManager.isCollectedQuest("blockWalker")) "§eVocê já completou essa missão."
-                        else if (passManager.getQuestProgress("blockWalker")!! >= 1000) "§eClique para completar a missão"
-                        else "§7Você não pode completar a missão",
+                        else if (passManager.getQuestProgress("blockWalker")!! >= 10000) "§eClique para completar a missão"
+                        else "§7Você ainda não completou essa missão, faltam: §f${10000.minus(passManager.getQuestProgress("blockWalker")!!)} blocos§7.",
                         ""))
 
                 inv.setItem(12, ItemStack(if (passManager.isCollectedQuest("blockBreaker")) Material.STORAGE_MINECART else Material.MINECART)
@@ -60,7 +60,7 @@ class PassCommand : CommandExecutor {
                         "§eRecompensa: §f20.000 cash",
                         if (passManager.isCollectedQuest("blockBreaker")) "§eVocê já completou essa missão."
                         else if (passManager.getQuestProgress("blockBreaker")!! >= 30000) "§eClique para completar a missão"
-                        else "§7Você não pode completar a missão",
+                        else "§7Você ainda não completou essa missão, faltam: §f${30000.minus(passManager.getQuestProgress("blockBreaker")!!)} blocos§7.",
                         ""))
                 inv.setItem(13, ItemStack(if (passManager.isCollectedQuest("playerKiller")) Material.STORAGE_MINECART else Material.MINECART)
                     .name("§eMissão §f#4")
@@ -72,20 +72,20 @@ class PassCommand : CommandExecutor {
                         "§eRecompensa: §f20.000 cash",
                         if (passManager.isCollectedQuest("playerKiller")) "§eVocê já completou essa missão."
                         else if (passManager.getQuestProgress("playerKiller")!! >= 50) "§eClique para completar a missão"
-                        else "§7Você não pode completar a missão",
+                        else "§7Você ainda não completou essa missão, faltam: §f${50.minus(passManager.getQuestProgress("playerKiller")!!)} kills§7.",
                         ""))
 
-                inv.setItem(15, ItemStack(Material.STORAGE_MINECART)
+                inv.setItem(15, ItemStack(if (passManager.isCollectedQuest("questsCompleter")) Material.STORAGE_MINECART else Material.MINECART)
                     .name("§eMissão §f#5")
                     .lore(
                         "",
                         "§7Complete §f4§7 missões do passe de elite do servidor.",
-                        "§7Você já completou §f${passManager.getPassPlayer().quests.size} missões§7.",
+                        "§7Você já completou §f${passManager.getQuestProgress("questsCompleter")} missões§7.",
                         "",
                         "§eRecompensa: §f20.000 cash",
                         if (passManager.isCollectedQuest("questsCompleter")) "§eVocê já completou essa missão."
                         else if (passManager.getQuestProgress("questsCompleter")!! >= 4) "§eClique para completar a missão"
-                        else "§7Você não pode completar a missão",
+                        else "§7Você ainda não completou essa missão, faltam: §f${4.minus(passManager.getQuestProgress("questsCompleter")!!)} missões§7.",
                         ""))
 
                 openInventory(inv)

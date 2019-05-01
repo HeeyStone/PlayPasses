@@ -38,6 +38,7 @@ class InventoryListeners : Listener {
 
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
                         passManager.colectQuest("mobKiller")
+                        passManager.addProgressInQuest("questsCompleter", 1)
                     }
                 11 ->
                     if (!passManager.isCollectedQuest("blockWalker") && passManager.getQuestProgress("blockWalker")!! >= 10000) {
@@ -52,6 +53,7 @@ class InventoryListeners : Listener {
 
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
                         passManager.colectQuest("blockWalker")
+                        passManager.addProgressInQuest("questsCompleter", 1)
                     }
             }
         }
