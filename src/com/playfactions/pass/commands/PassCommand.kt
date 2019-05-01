@@ -28,12 +28,63 @@ class PassCommand : CommandExecutor {
                     .name("§eMissão §f#1")
                     .lore(
                         "",
-                        "§7Mate §f1000§7 monstros no servidor.",
+                        "§7Mate §f1.000§7 monstros no servidor.",
                         "§7Você já matou §f${passManager.getQuestProgress("mobKiller")} monstros§7.",
                         "",
                         "§eRecompensa: §f20.000 cash",
                         if (passManager.isCollectedQuest("mobKiller")) "§eVocê já completou essa missão."
                         else if (passManager.getQuestProgress("mobKiller")!! >= 1000) "§eClique para completar a missão"
+                        else "§7Você não pode completar a missão",
+                        ""))
+
+                inv.setItem(11, ItemStack(if (passManager.isCollectedQuest("blockWalker")) Material.STORAGE_MINECART else Material.MINECART)
+                    .name("§eMissão §f#2")
+                    .lore(
+                        "",
+                        "§7Caminhe §f10.000§7 blocos no servidor.",
+                        "§7Você já caminhou §f${passManager.getQuestProgress("blockWalker")} blocos§7.",
+                        "",
+                        "§eRecompensa: §f20.000 cash",
+                        if (passManager.isCollectedQuest("blockWalker")) "§eVocê já completou essa missão."
+                        else if (passManager.getQuestProgress("blockWalker")!! >= 1000) "§eClique para completar a missão"
+                        else "§7Você não pode completar a missão",
+                        ""))
+
+                inv.setItem(12, ItemStack(if (passManager.isCollectedQuest("blockBreaker")) Material.STORAGE_MINECART else Material.MINECART)
+                    .name("§eMissão §f#3")
+                    .lore(
+                        "",
+                        "§7Quebre §f30.000§7 blocos no servidor.",
+                        "§7Você já quebrou §f${passManager.getQuestProgress("blockBreaker")} blocos§7.",
+                        "",
+                        "§eRecompensa: §f20.000 cash",
+                        if (passManager.isCollectedQuest("blockBreaker")) "§eVocê já completou essa missão."
+                        else if (passManager.getQuestProgress("blockBreaker")!! >= 30000) "§eClique para completar a missão"
+                        else "§7Você não pode completar a missão",
+                        ""))
+                inv.setItem(13, ItemStack(if (passManager.isCollectedQuest("playerKiller")) Material.STORAGE_MINECART else Material.MINECART)
+                    .name("§eMissão §f#4")
+                    .lore(
+                        "",
+                        "§7Mate §f50§7 pessoas no servidor.",
+                        "§7Você já matou §f${passManager.getQuestProgress("playerKiller")} pessoas§7.",
+                        "",
+                        "§eRecompensa: §f20.000 cash",
+                        if (passManager.isCollectedQuest("playerKiller")) "§eVocê já completou essa missão."
+                        else if (passManager.getQuestProgress("playerKiller")!! >= 50) "§eClique para completar a missão"
+                        else "§7Você não pode completar a missão",
+                        ""))
+
+                inv.setItem(15, ItemStack(Material.STORAGE_MINECART)
+                    .name("§eMissão §f#5")
+                    .lore(
+                        "",
+                        "§7Complete §f4§7 missões do passe de elite do servidor.",
+                        "§7Você já completou §f${passManager.getPassPlayer().quests.size} missões§7.",
+                        "",
+                        "§eRecompensa: §f20.000 cash",
+                        if (passManager.isCollectedQuest("questsCompleter")) "§eVocê já completou essa missão."
+                        else if (passManager.getQuestProgress("questsCompleter")!! >= 4) "§eClique para completar a missão"
                         else "§7Você não pode completar a missão",
                         ""))
 

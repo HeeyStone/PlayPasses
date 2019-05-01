@@ -33,11 +33,25 @@ class InventoryListeners : Listener {
                                 it.sendActionBarMessage("§aO jogador §f${p.name}§a concluiu a missão §f#1§a do passe de elite" )
                             }
                         }
-                        p.sendTitle("§a§lMissões", "§fVocê concluiu uma missão e recebeu seu premio!", 0, 20*3, 0)
+                        p.sendTitle("§a§lMissões (§f#1§a)", "§fVocê concluiu uma missão e recebeu seu premio!", 0, 20*3, 0)
                         ActionbarUtil(p).sendActionBarMessage("§aVocê concluiu a missão §f#1§a do passe de elite!", 5, PlayPass.INSTANCE)
 
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
                         passManager.colectQuest("mobKiller")
+                    }
+                11 ->
+                    if (!passManager.isCollectedQuest("blockWalker") && passManager.getQuestProgress("blockWalker")!! >= 10000) {
+                        p.closeInventory()
+                        Bukkit.getOnlinePlayers().forEach {
+                            if (it.name != p.name) {
+                                it.sendActionBarMessage("§aO jogador §f${p.name}§a concluiu a missão §f#2§a do passe de elite" )
+                            }
+                        }
+                        p.sendTitle("§a§lMissões (§f#2§a)", "§fVocê concluiu uma missão e recebeu seu premio!", 0, 20*3, 0)
+                        ActionbarUtil(p).sendActionBarMessage("§aVocê concluiu a missão §f#2§a do passe de elite!", 5, PlayPass.INSTANCE)
+
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
+                        passManager.colectQuest("blockWalker")
                     }
             }
         }

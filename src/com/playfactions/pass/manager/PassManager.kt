@@ -7,16 +7,20 @@ import kotlin.collections.ArrayList
 class PassManager(val uuid: UUID) {
 
     fun putInCache() {
-        PlayPass.CACHE.putIfAbsent(uuid, QuestPlayer(uuid, ArrayList()))
+        PlayPass.CACHE.putIfAbsent(uuid, PassPlayer(uuid, ArrayList()))
 
         addQuest(Quest("mobKiller", 0))
+        addQuest(Quest("blockWalker", 0))
+        addQuest(Quest("blockBreaker", 0))
+        addQuest(Quest("playerKiller", 0))
+        addQuest(Quest("questsCompleter", 0))
     }
 
     fun hasPass() = PlayPass.CACHE.containsKey(uuid)
-    fun getQuestPlayer(): QuestPlayer = PlayPass.CACHE[uuid]!!
+    fun getPassPlayer(): PassPlayer = PlayPass.CACHE[uuid]!!
 
     fun hasQuestByName(quest: String): Boolean {
-        getQuestPlayer().quests.forEach {
+        getPassPlayer().quests.forEach {
             if (it.name.equals(quest, true)) {
                 return true
             }
@@ -27,14 +31,14 @@ class PassManager(val uuid: UUID) {
     fun addQuest(quest: Quest) {
         if (hasPass()) {
             if (!hasQuestByName(quest.name)) {
-                getQuestPlayer().quests.add(quest)
+                getPassPlayer().quests.add(quest)
             }
         }
     }
 
     fun getQuestProgress(quest: String): Int? {
         if (hasPass()) {
-            getQuestPlayer().quests.forEach {
+            getPassPlayer().quests.forEach {
                 if (it.name.equals(quest, true) || it.name.equals("collected$quest", true)) return it.progress
             }
         }
@@ -43,30 +47,31 @@ class PassManager(val uuid: UUID) {
 
     fun addProgressInQuest(quest: String, int: Int) {
         if (hasPass()) {
-            getQuestPlayer().quests.forEach {
+            getPassPlayer().quests.forEach {
                 if (it.name.equals(quest, true) || it.name.toLowerCase().equals("collected${quest.toLowerCase()}")) it.progress += int
             }
         }
     }
 
     fun colectQuest(quest: String) {
-        val quests = getQuestPlayer().quests
+        val quests = getPassPlayer().quests
         quests.forEach {
             if (it.name == quest) {
-                it.name = "collectedMobKiller"
+                it.name = "collected$quest"
             }
         }
-        getQuestPlayer().quests = quests
+        getPassPlayer().quests = quests
     }
 
     fun isCollectedQuest(quest: String): Boolean {
-        getQuestPlayer().quests.forEach {
+        getPassPlayer().quests.forEach {
             if (it.name.toLowerCase().contains(quest.toLowerCase()) && it.name.contains("collected")) return true
         }
         return false
     }
+    
 
 }
 
-data class QuestPlayer(val uuid: UUID, var quests: ArrayList<Quest>)
+data class PassPlayer(val uuid: UUID, var quests: ArrayList<Quest>)
 data class Quest(var name: String, var progress: Int)

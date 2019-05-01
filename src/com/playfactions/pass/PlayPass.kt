@@ -3,7 +3,7 @@ package com.playfactions.pass
 import com.playfactions.pass.commands.PassCommand
 import com.playfactions.pass.listener.InventoryListeners
 import com.playfactions.pass.listener.PlayerListeners
-import com.playfactions.pass.manager.QuestPlayer
+import com.playfactions.pass.manager.PassPlayer
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import kotlin.collections.HashMap
@@ -12,7 +12,7 @@ class PlayPass : JavaPlugin() {
 
     companion object {
         lateinit var INSTANCE: JavaPlugin
-        lateinit var CACHE: HashMap<UUID, QuestPlayer>
+        lateinit var CACHE: HashMap<UUID, PassPlayer>
     }
 
     override fun onEnable() {
