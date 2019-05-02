@@ -23,14 +23,12 @@ class PlayPass : JavaPlugin() {
         CACHE = HashMap()
         SQL = MySQL("localhost:3306", "root", "", "stone")
 
-        if (PassManager.getAllPlayersSQL() != null) {
-            for (questPlayer in PassManager.getAllPlayersSQL()!!) {
-                CACHE.putIfAbsent(questPlayer.uuid, questPlayer)
-            }
-        }
-
         if (SQL.hasConnected()) {
             SQL.prepare("create table if not exists playpasses(UUID VARCHAR(200) PRIMARY KEY, Quests VARCHAR(200) NOT NULL)")
+        }
+
+        for (questPlayer in PassManager.getAllPlayersSQL()!!) {
+            CACHE.put(questPlayer.uuid, questPlayer)
         }
 
         PassCommand()
