@@ -6,6 +6,31 @@ import kotlin.collections.ArrayList
 
 class PassManager(val uuid: UUID) {
 
+    companion object {
+        private fun finalSplit(string: String, index: Int) = string.split(";")[index].split(":")
+
+        fun getAllPlayersSQL(): List<PassPlayer>? {
+            val rs = PlayPass.SQL.prepare("SELECT * FROM playpasses")
+            val listPlayer = ArrayList<PassPlayer>()
+            val listQuests = ArrayList<Quest>()
+
+            if (rs != null) {
+                while (rs.next()) {
+                    listQuests.add(Quest(finalSplit(rs.getString("Quests"), 1)[1], finalSplit(rs.getString("Quests"), 1)[2].toInt()))
+                    listQuests.add(Quest(finalSplit(rs.getString("Quests"), 2)[1], finalSplit(rs.getString("Quests"), 1)[2].toInt()))
+                    listQuests.add(Quest(finalSplit(rs.getString("Quests"), 3)[1], finalSplit(rs.getString("Quests"), 1)[2].toInt()))
+                    listQuests.add(Quest(finalSplit(rs.getString("Quests"), 4)[1], finalSplit(rs.getString("Quests"), 1)[2].toInt()))
+                    listQuests.add(Quest(finalSplit(rs.getString("Quests"), 5)[1], finalSplit(rs.getString("Quests"), 1)[2].toInt()))
+
+                    listPlayer.add(PassPlayer(UUID.fromString(rs.getString("UUID")), listQuests))
+                }
+            } else return null
+            return listPlayer
+        }
+    }
+
+    val sql = PlayPass.SQL
+
     fun putInCache() {
         PlayPass.CACHE.putIfAbsent(uuid, PassPlayer(uuid, ArrayList()))
 
@@ -69,7 +94,27 @@ class PassManager(val uuid: UUID) {
         }
         return false
     }
-    
+
+    fun insert() {
+        if (!isInSQL()) {
+            val serialized = "{mobKiller:${getQuestProgress("mobKiller")};blockWalker:${getQuestProgress("blockWalker")};blockBreaker:${getQuestProgress("blockBreaker")};playerKiller:${getQuestProgress("playerKiller")};questsCompleter${getQuestProgress("questsCompleter")}}}"
+            sql.prepare("INSERT INTO playpasses (UUID, Quests) VALUES (?, ?)", uuid.toString(), serialized)
+        }
+    }
+
+    fun save() {
+        if (isInSQL()) {
+            val serialized = "{mobKiller:${getQuestProgress("mobKiller")};blockWalker:${getQuestProgress("blockWalker")};blockBreaker:${getQuestProgress("blockBreaker")};playerKiller:${getQuestProgress("playerKiller")};questsCompleter${getQuestProgress("questsCompleter")}}}"
+            sql.prepare("UPDATE playpasses SET UUID = ?, Quests = ?", uuid.toString(), serialized)
+        }
+    }
+
+    fun isInSQL(): Boolean {
+        if (sql.prepare("SELECT * FROM playpasses WHERE UUID = ?", uuid.toString())?.next()!!) {
+            return true
+        }
+        return false
+    }
 
 }
 
