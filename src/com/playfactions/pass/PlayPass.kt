@@ -27,7 +27,7 @@ class PlayPass : JavaPlugin() {
             SQL.prepare("create table if not exists playpasses(UUID VARCHAR(200) PRIMARY KEY, Quests VARCHAR(200) NOT NULL)")
         }
 
-        for (questPlayer in PassManager.getAllPlayersSQL()!!) {
+        for (questPlayer in PassManager.getAllPlayersSQL()) {
             CACHE.put(questPlayer.uuid, questPlayer)
         }
 

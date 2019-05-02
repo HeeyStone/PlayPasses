@@ -78,16 +78,14 @@ class PassManager(val uuid: UUID) {
 
     fun insert() {
         if (!isInSQL()) {
-            val serialized =
-                "{mobKiller:${getQuestProgress("mobKiller")};blockWalker:${getQuestProgress("blockWalker")};blockBreaker:${getQuestProgress("blockBreaker")};playerKiller:${getQuestProgress("playerKiller")};questsCompleter${getQuestProgress("questsCompleter")}}}"
+            val serialized = "{mobKiller:${getQuestProgress("mobKiller")};blockWalker:${getQuestProgress("blockWalker")};blockBreaker:${getQuestProgress("blockBreaker")};playerKiller:${getQuestProgress("playerKiller")};questsCompleter:${getQuestProgress("questsCompleter")}}}"
             sql.prepare("INSERT INTO playpasses (UUID, Quests) VALUES (?, ?)", uuid.toString(), serialized)
         }
     }
 
     fun save() {
         if (isInSQL()) {
-            val serialized =
-                "{mobKiller:${getQuestProgress("mobKiller")};blockWalker:${getQuestProgress("blockWalker")};blockBreaker:${getQuestProgress("blockBreaker")};playerKiller:${getQuestProgress("playerKiller")};questsCompleter${getQuestProgress("questsCompleter")}}}"
+            val serialized = "{mobKiller:${getQuestProgress("mobKiller")};blockWalker:${getQuestProgress("blockWalker")};blockBreaker:${getQuestProgress("blockBreaker")};playerKiller:${getQuestProgress("playerKiller")};questsCompleter:${getQuestProgress("questsCompleter")}}}"
             sql.prepare("UPDATE playpasses SET UUID = ?, Quests = ?", uuid.toString(), serialized)
         }
     }
@@ -100,7 +98,7 @@ class PassManager(val uuid: UUID) {
     }
 
     companion object {
-        private fun finalSplit(string: String, index: Int) = string.split(";")[index].split(":")
+        private fun finalSplit(string: String, index: Int) = string.replace("}", "").replace("{", "").split(";")[index].split(":")
 
         fun getAllPlayersSQL(): List<PassPlayer> {
             val rs = PlayPass.SQL.prepare("SELECT * FROM playpasses")
@@ -108,11 +106,11 @@ class PassManager(val uuid: UUID) {
             val listQuests = ArrayList<Quest>()
 
             while (rs?.next()!!) {
+                listQuests.add(Quest(finalSplit(rs.getString("Quests"), 0)[0], finalSplit(rs.getString("Quests"), 0)[1].toInt()))
                 listQuests.add(Quest(finalSplit(rs.getString("Quests"), 1)[0], finalSplit(rs.getString("Quests"), 1)[1].toInt()))
                 listQuests.add(Quest(finalSplit(rs.getString("Quests"), 2)[0], finalSplit(rs.getString("Quests"), 2)[1].toInt()))
                 listQuests.add(Quest(finalSplit(rs.getString("Quests"), 3)[0], finalSplit(rs.getString("Quests"), 3)[1].toInt()))
                 listQuests.add(Quest(finalSplit(rs.getString("Quests"), 4)[0], finalSplit(rs.getString("Quests"), 4)[1].toInt()))
-                listQuests.add(Quest(finalSplit(rs.getString("Quests"), 5)[0], finalSplit(rs.getString("Quests"), 5)[1].toInt()))
 
                 listPlayer.add(PassPlayer(UUID.fromString(rs.getString("UUID")), listQuests))
             }
