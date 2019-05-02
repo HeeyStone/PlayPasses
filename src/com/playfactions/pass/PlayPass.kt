@@ -20,28 +20,32 @@ class PlayPass : JavaPlugin() {
 
     override fun onEnable() {
         INSTANCE = this
+        SQL = MySQL("${config.getString("mysql.host")}:3306", config.getString("mysql.user"), config.getString("mysql.password"), config.getString("mysql.database"))
         CACHE = HashMap()
-        SQL = MySQL("localhost:3306", "root", "", "stone")
 
         if (SQL.hasConnected()) {
             SQL.prepare("create table if not exists playpasses(UUID VARCHAR(200) PRIMARY KEY, Quests VARCHAR(200) NOT NULL)")
+
+            PassManager.getAllPlayersSQL().forEach {
+                CACHE.put(it.uuid, it)
+            }
+        } else {
+            println("Ocorreu um erro ao iniciar o MySQL, desabilitando plugin...")
+            server.pluginManager.disablePlugin(this)
         }
 
-        for (questPlayer in PassManager.getAllPlayersSQL()) {
-            CACHE.put(questPlayer.uuid, questPlayer)
-        }
+        saveDefaultConfig()
 
-        PassCommand()
-        PlayerListeners()
-        InventoryListeners()
+        if (server.pluginManager.getPlugin("PlayPasses").isEnabled) {
+            PassCommand()
+            PlayerListeners()
+            InventoryListeners()
+        }
     }
 
     override fun onDisable() {
-        for (uuid in CACHE.keys) {
-            val passManager = PassManager(uuid)
-            if (passManager.isInSQL()) {
-                passManager.save()
-            } else passManager.insert()
+        CACHE.keys.forEach {
+            if (PassManager(it).isInSQL()) PassManager(it).save() else PassManager(it).insert()
         }
     }
 
