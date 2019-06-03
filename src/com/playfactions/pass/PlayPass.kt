@@ -6,6 +6,7 @@ import com.playfactions.pass.listener.PlayerListeners
 import com.playfactions.pass.manager.PassManager
 import com.playfactions.pass.manager.PassPlayer
 import com.playfactions.pass.storage.MySQL
+import com.playfactions.pass.task.SaverTask
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import kotlin.collections.HashMap
@@ -25,10 +26,6 @@ class PlayPass : JavaPlugin() {
 
         if (SQL.hasConnected()) {
             SQL.prepare("create table if not exists playpasses(UUID VARCHAR(200) PRIMARY KEY, Quests VARCHAR(200) NOT NULL)")
-
-            PassManager.getAllPlayersSQL().forEach {
-                CACHE.put(it.uuid, it)
-            }
         } else {
             println("Ocorreu um erro ao iniciar o MySQL, desabilitando plugin...")
             server.pluginManager.disablePlugin(this)
@@ -38,6 +35,7 @@ class PlayPass : JavaPlugin() {
 
         if (server.pluginManager.getPlugin("PlayPasses").isEnabled) {
             PassCommand()
+            SaverTask()
             PlayerListeners()
             InventoryListeners()
         }

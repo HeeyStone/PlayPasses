@@ -12,11 +12,12 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.*
 
 class PassCommand : CommandExecutor {
 
     companion object {
-        val list = listOf("setar", "set", "inventory")
+        val list = listOf("setar", "set", "inventory", "info")
 
         fun CommandSender.openQuestsInventory() {
             val inv = Bukkit.createInventory(null, 3*9, "Missões do passe de elite")
@@ -99,12 +100,11 @@ class PassCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command?, label: String?, args: Array<out String>): Boolean {
         if (args.isEmpty() || list.firstOrNull { it == args[0] } == null) {
-            sender.sendMessage(
+             sender.sendMessage(
                 Sound.VILLAGER_NO,
                 "",
                 "§6§lPASSE DE ELITE",
-                "§7/passe setar <jogador> - Seta um passe.",
-                "§7/passe inventory [jogador] - Abre o inventário de missões.",
+                "§7/passe inventory - Abre o inventário de missões.",
                 "")
             return true
         }
@@ -119,10 +119,6 @@ class PassCommand : CommandExecutor {
                 return false
             }
             val target = Bukkit.getPlayer(args[1])
-            if (!sender.hasPermission("playpasses.setar")) {
-                sender.sendMessage(Sound.VILLAGER_NO, "§cVocê não tem permissão para esse comando.")
-                return false
-            }
             if (target == null) {
                 sender.sendMessage(Sound.VILLAGER_NO, "§cO jogador digitado não está on-line.")
                 return false
@@ -143,6 +139,7 @@ class PassCommand : CommandExecutor {
                 "")
             return true
         }
+
         if (args[0].equals("inventory", true)) {
             if (args.size == 1) {
                 if (!PassManager((sender as Player).uniqueId).hasPass()) {
@@ -162,6 +159,18 @@ class PassCommand : CommandExecutor {
             }
             target.openQuestsInventory()
             return true
+        }
+
+        if (args[0].equals("info", true)) {
+            sender.sendMessage(Sound.LEVEL_UP,
+                "",
+                "§6§lPASSES DE ELITE",
+                "§7Usuários com passe de elite:")
+            PassManager.getAllPlayersSQL().forEach {
+                val passManager = PassManager(it.uuid)
+                sender.sendMessage("§6[${it.uuid}] §7Missões: §6${passManager.getQuestProgress("questsCompleter")}")
+            }
+            sender.sendMessage("")
         }
 
         return false

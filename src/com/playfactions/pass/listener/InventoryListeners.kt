@@ -20,6 +20,7 @@ class InventoryListeners : Listener {
     @EventHandler
     fun eventInventoryClick(e: InventoryClickEvent) {
         val p = e.whoClicked as Player
+        if (e.clickedInventory == null) return
         if (e.clickedInventory.title == "Missões do passe de elite") {
             e.isCancelled = true
             val passManager = PassManager(p.uniqueId)
@@ -54,6 +55,50 @@ class InventoryListeners : Listener {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
                         passManager.colectQuest("blockWalker")
                         passManager.addProgressInQuest("questsCompleter", 1)
+                    }
+                12 ->
+                    if (!passManager.isCollectedQuest("blockBreaker") && passManager.getQuestProgress("blockBreaker")!! >= 30000) {
+                        p.closeInventory()
+                        Bukkit.getOnlinePlayers().forEach {
+                            if (it.name != p.name) {
+                                it.sendActionBarMessage("§aO jogador §f${p.name}§a concluiu a missão §f#3§a do passe de elite" )
+                            }
+                        }
+                        p.sendTitle("§a§lMissões (§f#3§a)", "§fVocê concluiu uma missão e recebeu seu premio!", 0, 20*3, 0)
+                        ActionbarUtil(p).sendActionBarMessage("§aVocê concluiu a missão §f#3§a do passe de elite!", 5, PlayPass.INSTANCE)
+
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
+                        passManager.colectQuest("blockBreaker")
+                        passManager.addProgressInQuest("questsCompleter", 1)
+                    }
+                13 ->
+                    if (!passManager.isCollectedQuest("playerKiller") && passManager.getQuestProgress("playerKiller")!! >= 50) {
+                        p.closeInventory()
+                        Bukkit.getOnlinePlayers().forEach {
+                            if (it.name != p.name) {
+                                it.sendActionBarMessage("§aO jogador §f${p.name}§a concluiu a missão §f#2§a do passe de elite" )
+                            }
+                        }
+                        p.sendTitle("§a§lMissões (§f#4§a)", "§fVocê concluiu uma missão e recebeu seu premio!", 0, 20*3, 0)
+                        ActionbarUtil(p).sendActionBarMessage("§aVocê concluiu a missão §f#4§a do passe de elite!", 5, PlayPass.INSTANCE)
+
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
+                        passManager.colectQuest("playerKiller")
+                        passManager.addProgressInQuest("questsCompleter", 1)
+                    }
+                15 ->
+                    if (!passManager.isCollectedQuest("questsCompleter") && passManager.getQuestProgress("questsCompleter")!! >= 4) {
+                        p.closeInventory()
+                        Bukkit.getOnlinePlayers().forEach {
+                            if (it.name != p.name) {
+                                it.sendActionBarMessage("§aO jogador §f${p.name}§a concluiu a missão §f#5§a do passe de elite" )
+                            }
+                        }
+                        p.sendTitle("§a§lParabéns", "§fVocê concluiu todas as missões da semana 1.", 0, 20*3, 0)
+                        ActionbarUtil(p).sendActionBarMessage("§aVocê concluiu a missão §f#5§a do passe de elite!", 5, PlayPass.INSTANCE)
+
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cash setar ${p.name} 20000")
+                        passManager.colectQuest("questsCompleter")
                     }
             }
         }
